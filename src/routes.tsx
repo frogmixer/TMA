@@ -9,46 +9,37 @@ import {
   MdBarChart,
   MdPerson,
   MdLock,
+  MdRocketLaunch,
+  MdWash,
+  MdChangeHistory
 } from 'react-icons/md';
 
 const routes = [
   {
-    name: 'Main Dashboard',
-    layout: '/admin',
-    path: 'default',
-    icon: <MdHome className="h-6 w-6" />,
+    name: 'Frog-Bridge',
+    layout: '/home',
+    path: 'bridge',
+    icon: <MdRocketLaunch className="h-6 w-6" />,
   },
   {
-    name: 'NFT Marketplace',
-    layout: '/admin',
-    path: 'nft-marketplace',
-    icon: <MdOutlineShoppingCart className="h-6 w-6" />,
+    name: 'Frog-Mixer',
+    layout: '/home',
+    path: 'mixer',
+    icon: <MdWash className="h-6 w-6" />,
 
     secondary: true,
   },
   {
-    name: 'Data Tables',
-    layout: '/admin',
-    icon: <MdBarChart className="h-6 w-6" />,
+    name: 'History',
+    layout: '/home',
+    icon: <MdChangeHistory className="h-6 w-6" />,
     path: 'data-tables',
   },
   {
-    name: 'Profile',
-    layout: '/admin',
-    path: 'profile',
+    name: 'Support',
+    layout: '/home',
+    path: 'support',
     icon: <MdPerson className="h-6 w-6" />,
-  },
-  {
-    name: 'Sign In',
-    layout: '/auth',
-    path: 'sign-in',
-    icon: <MdLock className="h-6 w-6" />,
-  },
-  {
-    name: 'RTL Admin',
-    layout: '/rtl',
-    path: 'rtl-default',
-    icon: <MdHome className="h-6 w-6" />,
-  },
+  }
 ];
 export default routes;
