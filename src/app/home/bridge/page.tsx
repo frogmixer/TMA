@@ -5,9 +5,11 @@ import Card from 'components/card';
 import {
   useDisclosure,
 } from '@chakra-ui/react'
-import { config } from "../../../core/config";
+import { config, getKeys } from "../../../core/config";
 import { useEffect, useState } from "react";
 import { search_token_by_id } from "core/utils";
+
+import { bridge } from "@frogmixer/bridge";
 const Dashboard = () => {
   const { open, onOpen, onClose } = useDisclosure()
 
@@ -21,8 +23,31 @@ const Dashboard = () => {
 
   const [toAmount , setToAmount] = useState(0)
 
-  useEffect(() => {
+  let b;
+  const init = async ()=>
+  {
+    b = new bridge(
+      {
+        keys:getKeys()
+      }
+    )
 
+    await b.init();
+
+    console.log(
+        b.estimate(
+          {
+            from:"SOL",
+            to:"TON",
+            amount:0.01
+          }
+        )
+    )
+  }
+
+  useEffect(() => {
+    
+    init();
   }, []);
 
   return (

@@ -68,6 +68,13 @@ const config = {
     ]
 }
 
+const getKeys = ()=>
+{
+    return JSON.parse(
+        process.env.NEXT_PUBLIC_FFKEYS
+    )
+}
 export {
-    config
+    config,
+    getKeys
 }
