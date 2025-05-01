@@ -2,13 +2,25 @@
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import Card from 'components/card';
-import { Wrap, WrapItem, Tag, Avatar, TagLabel } from "@chakra-ui/react";
-
 import {
   useDisclosure,
 } from '@chakra-ui/react'
+import { config } from "../../../core/config";
+import { useEffect, useState } from "react";
+import { search_token_by_id } from "core/utils";
 const Dashboard = () => {
   const { open, onOpen, onClose } = useDisclosure()
+
+  const [from, setFrom] = useState("SOL");
+
+  const [to, setTo] = useState("TON");
+
+  const [select, setSelect] = useState(true) // True : from /  False : false
+
+  useEffect(() => {
+
+  }, []);
+
   return (
     <div>
 
@@ -25,19 +37,26 @@ const Dashboard = () => {
                   </section>
                   <section className="flex flex-col gap-2">
                     <div className="search-items flex flex-wrap gap-2">
-                      {[
-                        {
-                          name:"SOL",
-                          image_uri:"/img/chains/sol.png"
-                        }
-                      ].map((item, index) => (
+                      {config.chains.map((item, index) => (
                         <div
                           key={index}
                           className="flex items-center border border-gray-300 rounded-full px-3 py-1 cursor-pointer hover:bg-gray-100 transition"
-                          
+                          onClick={
+                            ()=>
+                            {
+                              if(select)
+                              {
+                                //From
+                                setFrom(item.id)
+                              }else{
+                                //To
+                                setTo(item.id)
+                              }
+                            }
+                          }
                         >
                           <img
-                            src={item.image_uri}
+                            src={item.img}
                             alt={item.name}
                             className="w-6 h-6 rounded-full mr-2"
                           />
@@ -68,17 +87,31 @@ const Dashboard = () => {
                     <p>From</p>
                   </div> 
                   <div className="card_body flex justify-between items-center text-white">
-                    <div
-                      className="flex items-center gap-2 rounded-xl p-2 cursor-pointer bg-[#e6ddc0] hover:bg-black"
-                      style={{ minWidth: "15%" }}
-                      onClick={onOpen}
-                    >
-                      <img src='/img/chains/sol.png' style={{
-                        width:"30px"
-                      }}></img>
-                      <span className="text-medium ">SOL</span>
-                      <RiArrowDropDownLine size={24} />
-                    </div>
+
+                      {
+                        search_token_by_id(from) ? 
+                        <button
+                        className="flex items-center gap-2 rounded-xl p-2 cursor-pointer bg-[#e6ddc0] hover:bg-black"
+                        style={{ minWidth: "15%" }}
+                        onClick={
+                          ()=>
+                          {
+                            setSelect(true);
+                            onOpen()
+                          }
+                        }
+                      >
+  
+                        <img src={(search_token_by_id(from) as any).img} style={{
+                          width:"30px"
+                        }}></img>
+                        <span className="text-medium ">{(search_token_by_id(from) as any).name}</span>
+                        <RiArrowDropDownLine size={24} />
+                      </button>
+                      :
+                      null
+                      }
+
 
                     <input
                       className=" text-3xl "
@@ -117,20 +150,30 @@ const Dashboard = () => {
                     <p>To</p>
                   </div>
                   <div className="card_body flex justify-between items-center text-white">
-                    <button
-                      className="flex items-center gap-2 rounded-xl p-2 cursor-pointer bg-[#e6ddc0] hover:bg-black"
-                      style={{ minWidth: "15%" }}
-                      
-                    >
-                      <img src='/img/chains/ton.png' style={{
-                        width:"30px"
-                      }}></img>
-                      <span className="text-medium ">
-                        TON
-                      </span>
-                      <RiArrowDropDownLine size={24} />
-                    </button>
-
+                    {
+                      search_token_by_id(to)?
+                      <button
+                        className="flex items-center gap-2 rounded-xl p-2 cursor-pointer bg-[#e6ddc0] hover:bg-black"
+                        style={{ minWidth: "15%" }}
+                        onClick={
+                          ()=>
+                          {
+                            setSelect(false);
+                            onOpen()
+                          }
+                        }
+                      >
+                        <img src={(search_token_by_id(to) as any).img} style={{
+                          width:"30px"
+                        }}></img>
+                        <span className="text-medium ">
+                          {(search_token_by_id(to) as any).name}
+                        </span>
+                        <RiArrowDropDownLine size={24} />
+                      </button>
+                      :
+                      null
+                    }
                     <p className="text-3xl" style={{color:"black"}}>
                       {/* {Number((leverageOutAmount / 1e6).toFixed(3))} */}
                       {389201}
@@ -150,6 +193,42 @@ const Dashboard = () => {
                     Bridge Fee : 0.5%
                   </div>
                   <div className="bottom-14 right-0 w-full p-4">
+
+
+                  <div className="card_head flex justify-between">
+                    <p>Reciver Address</p>
+                  </div>
+                  <div className="card_body flex justify-between items-center text-white">
+
+
+                    <input
+                      className=" text-xl "
+                      style={{
+                        width: (to=="TON")?"70%":"100%",
+                        textAlign: "left",
+                        backgroundColor: "transparent",
+                        color: "black",
+                       
+                      }}
+                      placeholder="Input a valid address"
+                      onChange={(e: any) => {
+                      
+                      }}
+                    
+                      key="addressinput"
+                      type="text"
+                    ></input>
+
+                      <div
+                          className="flex items-center gap-2 rounded-xl p-2 cursor-pointer bg-[#e6ddc0] hover:bg-black"
+                          style={{ minWidth: "15%" ,display: (to=="TON")?"flex":"none"}}
+                        >
+                          <span className="text-medium ">connect</span>
+                  
+                      </div>
+                  </div>
+
+                  <br></br>
                 <button
                   className="w-full min-h-[50px] rounded-xl bg-[#e6ddc0] text-white text-lg font-semibold hover:bg-[#614c38] transition duration-200 shadow-md"
                 >
