@@ -56,13 +56,13 @@ const config = {
             img:"/img/chains/avax.png"
         },
         {
-            name:"ETH-USDT",
-            id:"ETHUSDT",
+            name:"BSC-USDT",
+            id:"USDTBSC",
             img:"/img/chains/usdt.png"
         },
         {
             name:"ETH-DAI",
-            id:"ETHDAI",
+            id:"DAIETH",
             img:"/img/chains/dai.png"
         },
     ]

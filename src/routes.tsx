@@ -18,7 +18,7 @@ const routes = [
   {
     name: 'Frog-Mixer',
     layout: '/home',
-    path: 'mixer',
+    path: 'dev',
     icon: <GiWashingMachine className="h-6 w-6" />,
 
     secondary: true,
@@ -27,18 +27,18 @@ const routes = [
     name: 'History',
     layout: '/home',
     icon: <FaHistory className="h-6 w-6" />,
-    path: 'data-tables',
+    path: 'dev',
   },
   {
     name: 'Support',
     layout: '/home',
-    path: 'support',
+    path: 'dev',
     icon: <MdContactSupport className="h-6 w-6" />,
   },
   {
     name: 'Source-Code',
     layout: '/home',
-    path: 'support',
+    path: 'dev',
     icon: <TbBrandGithub className="h-6 w-6" />,
   }
 ];

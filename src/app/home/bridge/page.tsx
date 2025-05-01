@@ -17,6 +17,10 @@ const Dashboard = () => {
 
   const [select, setSelect] = useState(true) // True : from /  False : false
 
+  const [fromAmount , setFromAmount] = useState(0)
+
+  const [toAmount , setToAmount] = useState(0)
+
   useEffect(() => {
 
   }, []);
@@ -121,12 +125,12 @@ const Dashboard = () => {
                         backgroundColor: "transparent",
                         color: "black",
                       }}
-                    
                       min={"0"}
-                
                       step="0.1"
+                      value={fromAmount}
                       onChange={(e: any) => {
-                      
+                        setFromAmount(e.target.value)
+                        setToAmount(e.target.value)
                       }}
                     
                       key="payinput"
@@ -176,7 +180,7 @@ const Dashboard = () => {
                     }
                     <p className="text-3xl" style={{color:"black"}}>
                       {/* {Number((leverageOutAmount / 1e6).toFixed(3))} */}
-                      {389201}
+                      {toAmount}
                     </p>
                   </div>
                   <div className="card_foot flex justify-between  text-xs">
