@@ -6,7 +6,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { config, getKeys } from "../../../core/config";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { search_token_by_id } from "core/utils";
 
 import { bridge } from "@frogmixer/bridge";
@@ -23,33 +23,54 @@ const Dashboard = () => {
 
   const [toAmount , setToAmount] = useState(0)
 
-  let b;
-  const init = async ()=>
-  {
-    b = new bridge(
-      {
-        keys:getKeys()
-      }
-    )
-
-    await b.init();
-
-    console.log(
-        b.estimate(
-          {
-            from:"SOL",
-            to:"TON",
-            amount:0.01
-          }
-        )
-    )
-  }
+  const bRef = useRef<any>(null);
 
   useEffect(() => {
-    
+    const init = async () => {
+      const inst = new bridge({
+        keys: getKeys(),
+        baseUrl: "https://proxy.frogmixer.autos",
+      });
+      await inst.init();
+      bRef.current = inst;
+    };
     init();
   }, []);
 
+  const estimatePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let amount = Number(e.target.value);
+    console.log(
+      {
+        from: from,
+        to: to,
+        amount,
+      }
+    )
+    const inst = bRef.current;
+    if (!inst) {
+      return;
+    }
+
+    const result = inst
+      .estimate({
+        from: from,
+        to: to,
+        amount,
+      });
+    console.log(result)
+    if(Number(result.minamount)>amount)
+    {
+      return setToAmount(0);
+    }
+    if(amount>Number(result.maxamount))
+      {
+        amount = Number(result.maxamount);
+        setFromAmount(Number(result.maxamount));
+      }
+    setToAmount(
+      Number(
+        (result.out*amount).toFixed(3)));
+  };
   return (
     <div>
 
@@ -81,6 +102,7 @@ const Dashboard = () => {
                                 //To
                                 setTo(item.id)
                               }
+                              onClose();
                             }
                           }
                         >
@@ -155,7 +177,10 @@ const Dashboard = () => {
                       value={fromAmount}
                       onChange={(e: any) => {
                         setFromAmount(e.target.value)
-                        setToAmount(e.target.value)
+                        if(Number(e.target.value)>0)
+                        {
+                          estimatePrice(e)
+                        }
                       }}
                     
                       key="payinput"
@@ -166,7 +191,7 @@ const Dashboard = () => {
                     <p></p>
                     <p>
                       <span className="text-xl" style={{ color: "gray" }}>
-                        ~${" "}
+                        ~${'∞'}
                       </span>
                     </p>
                   </div>
@@ -213,7 +238,7 @@ const Dashboard = () => {
                     <p></p>
                     <p>
                       <span className="text-xl" style={{ color: "gray" }}>
-                        ~${231}{" "}
+                        ~${'∞'}{" "}
                       </span>
                     </p>
                   </div>
