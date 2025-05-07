@@ -8,10 +8,13 @@ import {
 } from '@chakra-ui/react'
 import { config, getChain, getKeys } from "../../../core/config";
 import { useEffect, useRef, useState } from "react";
-import { search_token_by_id } from "core/utils";
+import { search_token_by_id, toNoBounceAddress } from "core/utils";
 
 import { bridge } from "@frogmixer/bridge";
 import { generateQRCodeBase64 } from "utils/qr";
+import { SendTransactionRequest, useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
+import {TonConnectButton} from "@tonconnect/ui-react";
+
 const Dashboard = () => {
   const { open, onOpen, onClose } = useDisclosure()
 
@@ -35,10 +38,27 @@ const Dashboard = () => {
   const [invoiceAmount , setInvoiceAmount] = useState(0)
   const [invoiceImg , setInvoiceImg] = useState("")
 
+  const [tonConnectUi] = useTonConnectUI();
 
   const [initLock , setInitLock] = useState(false)
 
   const bRef = useRef<any>(null);
+
+  const defaultTx: SendTransactionRequest = {
+    validUntil: Math.floor(Date.now() / 1000) + 600,
+    messages: [
+      {
+        address: 'EQCKWpx7cNMpvmcN5ObM5lLUZHZRFKqYA4xmw9jOry0ZsF9M',
+        amount: '5000000',
+        stateInit: 'te6cckEBBAEAOgACATQCAQAAART/APSkE/S88sgLAwBI0wHQ0wMBcbCRW+D6QDBwgBDIywVYzxYh+gLLagHPFsmAQPsAlxCarA==',
+        payload: 'te6ccsEBAQEADAAMABQAAAAASGVsbG8hCaTc/g==',
+      },
+    ],
+  };
+
+  const [tx, setTx] = useState(defaultTx);
+
+  const wallet = useTonWallet();
 
   useEffect(() => {
 
@@ -61,7 +81,12 @@ const Dashboard = () => {
     {
       transactionPending()
     }
-  }, [invoiceId]);
+
+    if(wallet && to =="TON")
+    {
+      setToAddress(toNoBounceAddress(wallet.account.address))
+    }
+  }, [invoiceId,wallet]);
 
   const estimatePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
     let amount = Number(e.target.value);
@@ -411,16 +436,17 @@ const Dashboard = () => {
                       onChange={(e: any) => {
                         setToAddress(e.target.value)
                       }}
-                    
+                      value={toAddress}
                       key="addressinput"
                       type="text"
                     ></input>
 
                       <div
-                          className="flex items-center gap-2 rounded-xl p-2 cursor-pointer bg-[#e6ddc0] hover:bg-black"
+                          className="flex items-center gap-2 rounded-xl p-2 cursor-pointer hover:bg-black"
                           style={{ minWidth: "15%" ,display: (to=="TON")?"flex":"none"}}
                         >
-                          <span className="text-medium ">connect</span>
+                          {/* <span className="text-medium ">connect</span> */}
+                          <TonConnectButton/>
                   
                       </div>
                   </div>

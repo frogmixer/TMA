@@ -1,4 +1,5 @@
 import { config } from "./config";
+import { toUserFriendlyAddress  } from  "@tonconnect/ui-react";
 
 const search_token_by_id = (id:string) =>
 {
@@ -12,6 +13,9 @@ const search_token_by_id = (id:string) =>
     return false
 }
 
+export function toNoBounceAddress(rawAddress: string): string {
+    return toUserFriendlyAddress(rawAddress, false);
+  }
 export {
     search_token_by_id
 }
