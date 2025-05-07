@@ -3,15 +3,19 @@ import { FaArrowDown, FaArrowUp } from "react-icons/fa";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import Card from 'components/card';
 import {
+  Flex,
   useDisclosure,
 } from '@chakra-ui/react'
-import { config, getKeys } from "../../../core/config";
+import { config, getChain, getKeys } from "../../../core/config";
 import { useEffect, useRef, useState } from "react";
 import { search_token_by_id } from "core/utils";
 
 import { bridge } from "@frogmixer/bridge";
+import { generateQRCodeBase64 } from "utils/qr";
 const Dashboard = () => {
   const { open, onOpen, onClose } = useDisclosure()
+
+  const { open: orderOpen, onOpen: onOrderOpen, onClose: onOrderClose } = useDisclosure();
 
   const [from, setFrom] = useState("SOL");
 
@@ -23,9 +27,21 @@ const Dashboard = () => {
 
   const [toAmount , setToAmount] = useState(0)
 
+  const [toAddress , setToAddress] = useState("")
+
+  const [invoiceId , setInvoiceId] = useState("")
+  const [invoiceToken , setInvoiceToken] = useState("")
+  const [invoiceAddress , setInvoiceAddress] = useState("")
+  const [invoiceAmount , setInvoiceAmount] = useState(0)
+  const [invoiceImg , setInvoiceImg] = useState("")
+
+
+  const [initLock , setInitLock] = useState(false)
+
   const bRef = useRef<any>(null);
 
   useEffect(() => {
+
     const init = async () => {
       const inst = new bridge({
         keys: getKeys(),
@@ -34,8 +50,18 @@ const Dashboard = () => {
       await inst.init();
       bRef.current = inst;
     };
-    init();
-  }, []);
+
+    if(!initLock)
+    {
+      setInitLock(true);
+      init();
+    }
+    
+    if(invoiceId)
+    {
+      transactionPending()
+    }
+  }, [invoiceId]);
 
   const estimatePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
     let amount = Number(e.target.value);
@@ -57,7 +83,7 @@ const Dashboard = () => {
         to: to,
         amount,
       });
-    console.log(result)
+    // console.log(result)
     if(Number(result.minamount)>amount)
     {
       return setToAmount(0);
@@ -71,6 +97,76 @@ const Dashboard = () => {
       Number(
         (result.out*amount).toFixed(3)));
   };
+
+  const confirm = async ()=>
+  {
+    const inst = bRef.current;
+    if (!inst) {
+      return;
+    }
+    const result = await inst
+    .bridge({
+      from: from,
+      to: to,
+      amount:fromAmount,
+      toAddress:toAddress,
+      type:"float",
+      refcode:"nsvhdzsa",
+      afftax:0
+    });
+    console.log(result)
+    if(result && result?.msg == "OK" && result?.data && result.data?.from && result.data.from?.address)
+    {
+      setInvoiceId(result.data.id);
+      setInvoiceToken(result.data.token);
+      setInvoiceAddress(result.data.from.address)
+      setInvoiceAmount(
+        Number(result.data.from.amount)
+      )
+      const qr = await generateQRCodeBase64(result.data.from.address);
+      console.log(qr)
+      setInvoiceImg(
+        qr
+      )
+
+      onOrderOpen()
+
+      transactionPending()
+
+    }
+  }
+
+  const transactionPending = async()=>
+  {
+    const inst = bRef.current;
+    if (!inst) {
+      return;
+    }
+    const cf = await inst.bridge_confirm()
+
+    console.log("Confirm Data :: ",cf)
+    if(cf)
+    {
+      onOrderClose();
+      if(cf?.to && cf.to?.tx && cf.to.tx.id)
+      {
+        let c = getChain(to);
+        if(c)
+        {
+          window.location.href =  `${c.scan.base + c.scan.tx}/${cf.to.tx.id}`
+        }
+      }
+    }
+  }
+  const [copiedIndex, setCopiedIndex] = useState<number>(0);
+
+  const handleCopy = async (text: string, index: number) => {
+    await navigator.clipboard.writeText(text);
+    setCopiedIndex(index);
+    setTimeout(() => setCopiedIndex(1), 2000);
+  };
+
+
   return (
     <div>
 
@@ -122,6 +218,53 @@ const Dashboard = () => {
           </div>
       </div>
 
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray" style={{
+        display : orderOpen?"block":"none",
+        backgroundColor:"transparent"
+      }}>
+        <div className="bg-gray-300/70 p-6 rounded-xl shadow-lg h-full">
+            <Card extra="rounded-[20px] p-3"  onClick={(e:any) => e.stopPropagation()}>
+            <section className="flex items-center py-2">
+                    <p className="grow text-center font-bold">Transfer {invoiceAmount} {from} to</p>
+                  </section>
+                  <section className="flex flex-col gap-2">
+                    <div className="search-items flex flex-wrap gap-2">
+                      <div className="flex flex-col gap-4">
+                        <div className="flex w-full">
+                          <pre className="text-sm bg-gray-100 p-2 rounded">{invoiceAddress}</pre>
+                        </div>
+                        <div className="w-full flex justify-center items-center">
+                          <button
+                            onClick={() => handleCopy(invoiceAddress, 0)}
+                            className="w-3/5 text-xs px-2 py-1 rounded-xl bg-gray-300 hover:bg-gray-400 transition text-center"
+                          >
+                            {copiedIndex === 1 ? 'Copied!' : 'Copy'}
+                          </button>
+                        </div>
+
+
+                      </div>
+
+                      <div className="w-full flex justify-center items-center">
+                          <img
+                          src={invoiceImg?invoiceImg:"/img/logo.png"}
+                          style={{
+                            width:"50%",
+                            height:"50%",
+                            minWidth:"256px",
+                            minHeight:"256px"
+                          }}
+                          />
+                        </div>
+
+
+                    </div>
+
+                  </section>
+                  
+            </Card>
+          </div>
+      </div>
 
         <Card extra="rounded-[20px] p-3">
           <div className="flex gap-2.5 justify-center">
@@ -266,7 +409,7 @@ const Dashboard = () => {
                       }}
                       placeholder="Input a valid address"
                       onChange={(e: any) => {
-                      
+                        setToAddress(e.target.value)
                       }}
                     
                       key="addressinput"
@@ -285,6 +428,7 @@ const Dashboard = () => {
                   <br></br>
                 <button
                   className="w-full min-h-[50px] rounded-xl bg-[#e6ddc0] text-white text-lg font-semibold hover:bg-[#614c38] transition duration-200 shadow-md"
+                  onClick={confirm}
                 >
                   Bridge Now
                 </button>
