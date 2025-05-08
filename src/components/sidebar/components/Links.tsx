@@ -29,7 +29,7 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
         // route.layout === '/rtl'
       ) {
         return (
-          <NavLink key={index} href={route.layout + '/' + route.path}>
+          <NavLink key={index} href={(route.layout!="/links")?(route.layout + '/' + route.path) : (route.path)}>
             <div className="relative mb-3 flex hover:cursor-pointer">
               <li
                 className="my-[3px] flex cursor-pointer items-center px-8"

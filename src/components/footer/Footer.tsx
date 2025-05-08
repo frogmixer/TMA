@@ -11,7 +11,7 @@ const Footer = () => {
           <li>
             <a
               target="blank"
-              href="https://t.me/+4JUfM1MgH5UyNzQ1"
+              href="http://t.me/TonspaySupport_bot"
               className="text-base font-medium text-gray-600 hover:text-gray-600"
             >
               Support
@@ -20,10 +20,10 @@ const Footer = () => {
           <li>
             <a
               target="blank"
-              href="https://github.com/frogmixer/TMA/blob/main/LICENSE"
+              href="https://t.me/+4JUfM1MgH5UyNzQ1"
               className="text-base font-medium text-gray-600 hover:text-gray-600"
             >
-              License
+              Community
             </a>
           </li>
           <li>

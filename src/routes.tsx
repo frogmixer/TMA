@@ -31,14 +31,20 @@ const routes = [
   },
   {
     name: 'Support',
-    layout: '/home',
-    path: 'dev',
+    layout: '/links',
+    path: "http://t.me/TonspaySupport_bot",
+    icon: <MdContactSupport className="h-6 w-6" />,
+  },
+  {
+    name: 'Community',
+    layout: '/links',
+    path: "https://t.me/+4JUfM1MgH5UyNzQ1",
     icon: <MdContactSupport className="h-6 w-6" />,
   },
   {
     name: 'Source-Code',
-    layout: '/home',
-    path: 'dev',
+    layout: '/links',
+    path: 'https://github.com/frogmixer',
     icon: <TbBrandGithub className="h-6 w-6" />,
   }
 ];
