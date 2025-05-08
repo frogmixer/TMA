@@ -55,6 +55,7 @@ const Dashboard = () => {
 
       // setInvoiceAddress("UQAI9ack-mbNMw2oQEuiB6899ZZ1gdDAZXWzv_oIz_N7j9-0")
       // setInvoiceAmount(1);
+      // setInvoiceMemo("hello")
       // onOrderOpen();
       // timer()
       // setInvoiceImg(
@@ -309,8 +310,28 @@ const Dashboard = () => {
                             {copiedIndex === 1 ? 'Copied!' : 'Copy'}
                           </button>
                         </div>
-
-
+                      {
+                        invoiceMemo?
+                        <div className="w-full flex justify-center items-center" style={{color:"red"}}>
+                          ⚠ Copy memo and send with funds ⚠
+                        </div>
+                        :null
+                      }
+                      {
+                        invoiceMemo?
+                        <div className="w-full flex justify-center items-center">
+                          <pre className="text-sm bg-gray-100 p-2 rounded">{invoiceMemo}
+                          <button
+                            onClick={async() => {await navigator.clipboard.writeText(invoiceMemo);}}
+                            className="w-3/5 text-xs px-2 py-1 rounded-xl bg-gray-300 hover:bg-gray-400 transition text-center"
+                          >
+                            { 'Copy'}
+                          </button>
+                          </pre>
+                      </div>
+                      :
+                      null
+                      }
                       </div>
 
                       <div className="w-full flex justify-center items-center">
