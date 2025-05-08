@@ -14,15 +14,15 @@ import { bridge } from "@frogmixer/bridge";
 import { generateQRCodeBase64 } from "utils/qr";
 import { SendTransactionRequest, useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
 import {TonConnectButton} from "@tonconnect/ui-react";
-
+import TonWeb from 'tonweb';
 const Dashboard = () => {
   const { open, onOpen, onClose } = useDisclosure()
 
   const { open: orderOpen, onOpen: onOrderOpen, onClose: onOrderClose } = useDisclosure();
 
-  const [from, setFrom] = useState("TON");
+  const [from, setFrom] = useState("SOL");
 
-  const [to, setTo] = useState("SOL");
+  const [to, setTo] = useState("TON");
 
   const [select, setSelect] = useState(true) // True : from /  False : false
 
@@ -184,13 +184,18 @@ const Dashboard = () => {
         {
           return tonConnectUi.openModal()
         }else{
+          const cell = new TonWeb.boc.Cell();
+          cell.bits.writeUint(0, 32);
+          cell.bits.writeString(invoiceMemo);
+          const boc = await cell.toBoc(false);
+          const payload = TonWeb.utils.bytesToBase64(boc);
           const tx: SendTransactionRequest = {
             validUntil: Math.floor(Date.now() / 1000) + 600,
             messages: [
               {
                 address: invoiceAddress,
                 amount: Number(invoiceAmount*1e9).toFixed(0),
-                payload: Buffer.from("Hello world","utf-8").toString("base64"),
+                payload: payload
               },
             ],
           };
