@@ -121,6 +121,16 @@ const config = {
             }
         },
         {
+            name:"TRXUSDT",
+            id:"USDTTRX",
+            img:"/img/chains/usdt.png",
+            scan:{
+                base:"https://tronscan.org/#/",
+                account:"address",
+                tx:"transaction"
+            }
+        },
+        {
             name:"ETHDAI",
             id:"DAIETH",
             img:"/img/chains/dai.png",
