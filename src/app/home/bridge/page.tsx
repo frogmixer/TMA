@@ -39,6 +39,10 @@ const Dashboard = () => {
   const [invoiceAmount , setInvoiceAmount] = useState(0)
   const [invoiceImg , setInvoiceImg] = useState("")
 
+  const [miniFrom , setMiniFrom] = useState("")
+  const [maxFrom , setMaxFrom] = useState("")
+  const [toFee , setToFee] = useState("0")
+  
   const [tonConnectUi] = useTonConnectUI();
 
   const [initLock , setInitLock] = useState(false)
@@ -120,6 +124,9 @@ const Dashboard = () => {
         amount,
       });
     // console.log(result)
+    setMiniFrom(result.minamount)
+    setMaxFrom(result.maxamount)
+    setToFee(result.tofee)
     if(Number(result.minamount)>amount)
     {
       return setToAmount(0);
@@ -439,8 +446,8 @@ const Dashboard = () => {
                   <div className="card_foot flex justify-between">
                     <p></p>
                     <p>
-                      <span className="text-xl" style={{ color: "gray" }}>
-                        ~${'∞'}
+                      <span className="text-sm" style={{ color: "gray" }}>
+                        {miniFrom} ~ {maxFrom}
                       </span>
                     </p>
                   </div>
@@ -486,8 +493,8 @@ const Dashboard = () => {
                     {/* <p>{selectedTokenInfo.info.name}</p> */}
                     <p></p>
                     <p>
-                      <span className="text-xl" style={{ color: "gray" }}>
-                        ~${'∞'}{" "}
+                      <span className="text-sm" style={{ color: "gray" }}>
+                        Network Fee :~ {toFee}
                       </span>
                     </p>
                   </div>
