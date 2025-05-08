@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react'
 import { config, getChain, getKeys } from "../../../core/config";
 import { useEffect, useRef, useState } from "react";
-import { search_token_by_id, toNoBounceAddress } from "core/utils";
+import { formatTime, search_token_by_id, toNoBounceAddress } from "core/utils";
 
 import { bridge } from "@frogmixer/bridge";
 import { generateQRCodeBase64 } from "utils/qr";
@@ -20,9 +20,9 @@ const Dashboard = () => {
 
   const { open: orderOpen, onOpen: onOrderOpen, onClose: onOrderClose } = useDisclosure();
 
-  const [from, setFrom] = useState("SOL");
+  const [from, setFrom] = useState("TON");
 
-  const [to, setTo] = useState("TON");
+  const [to, setTo] = useState("SOL");
 
   const [select, setSelect] = useState(true) // True : from /  False : false
 
@@ -34,6 +34,7 @@ const Dashboard = () => {
 
   const [invoiceId , setInvoiceId] = useState("")
   const [invoiceToken , setInvoiceToken] = useState("")
+  const [invoiceMemo , setInvoiceMemo] = useState("")
   const [invoiceAddress , setInvoiceAddress] = useState("")
   const [invoiceAmount , setInvoiceAmount] = useState(0)
   const [invoiceImg , setInvoiceImg] = useState("")
@@ -44,25 +45,23 @@ const Dashboard = () => {
 
   const bRef = useRef<any>(null);
 
-  const defaultTx: SendTransactionRequest = {
-    validUntil: Math.floor(Date.now() / 1000) + 600,
-    messages: [
-      {
-        address: 'EQCKWpx7cNMpvmcN5ObM5lLUZHZRFKqYA4xmw9jOry0ZsF9M',
-        amount: '5000000',
-        stateInit: 'te6cckEBBAEAOgACATQCAQAAART/APSkE/S88sgLAwBI0wHQ0wMBcbCRW+D6QDBwgBDIywVYzxYh+gLLagHPFsmAQPsAlxCarA==',
-        payload: 'te6ccsEBAQEADAAMABQAAAAASGVsbG8hCaTc/g==',
-      },
-    ],
-  };
+  const [secondsLeft, setSecondsLeft] = useState(15 * 60);
 
-  const [tx, setTx] = useState(defaultTx);
 
   const wallet = useTonWallet();
 
   useEffect(() => {
-
     const init = async () => {
+
+      // setInvoiceAddress("UQAI9ack-mbNMw2oQEuiB6899ZZ1gdDAZXWzv_oIz_N7j9-0")
+      // setInvoiceAmount(1);
+      // onOrderOpen();
+      // timer()
+      // setInvoiceImg(
+      //   await generateQRCodeBase64("hello")
+      // )
+
+
       const inst = new bridge({
         keys: getKeys(),
         baseUrl: "https://proxy.frogmixer.autos",
@@ -87,6 +86,17 @@ const Dashboard = () => {
       setToAddress(toNoBounceAddress(wallet.account.address))
     }
   }, [invoiceId,wallet]);
+
+  const timer = ()=>
+  {
+    if (secondsLeft <= 0) return;
+
+    const timer = setInterval(() => {
+      setSecondsLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }
 
   const estimatePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
     let amount = Number(e.target.value);
@@ -153,11 +163,39 @@ const Dashboard = () => {
       setInvoiceImg(
         qr
       )
-
+      if(from == "TON")
+      {
+        setInvoiceMemo(result.data.from.tag)
+      }
       onOrderOpen()
 
+      timer()
       transactionPending()
 
+    }
+  }
+
+  const send = async ()=>
+  {
+    if(from == "TON")
+    {
+      //Send out TON Amount
+      if(!wallet)
+        {
+          return tonConnectUi.openModal()
+        }else{
+          const tx: SendTransactionRequest = {
+            validUntil: Math.floor(Date.now() / 1000) + 600,
+            messages: [
+              {
+                address: invoiceAddress,
+                amount: Number(invoiceAmount*1e9).toFixed(0),
+                payload: Buffer.from("Hello world","utf-8").toString("base64"),
+              },
+            ],
+          };
+          return tonConnectUi.sendTransaction(tx)
+        }
     }
   }
 
@@ -281,8 +319,25 @@ const Dashboard = () => {
                           }}
                           />
                         </div>
+                        {
+                          from=="TON"?
+                          <div className="w-full flex justify-center items-center bg-white">
+                          <button
+                            className="w-full min-h-[50px] rounded-xl bg-[#e6ddc0] text-white text-lg font-semibold hover:bg-[#614c38] transition duration-200 shadow-md"
+                            onClick={send}
+                          >
+                            Connect And Send
+                          </button>
+                        </div>
+                        :
+                        null
+                        }
 
-
+                        <div className="w-full flex justify-center items-center bg-white">
+                          <div className="text-6xl font-bold text-gray-800">
+                            {formatTime(secondsLeft)}
+                          </div>
+                        </div>
                     </div>
 
                   </section>

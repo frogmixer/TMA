@@ -16,6 +16,14 @@ const search_token_by_id = (id:string) =>
 export function toNoBounceAddress(rawAddress: string): string {
     return toUserFriendlyAddress(rawAddress, false);
   }
+
+export function formatTime  (totalSeconds: number)  {
+    const minutes = Math.floor(totalSeconds / 60)
+      .toString()
+      .padStart(2, '0');
+    const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+    return `${minutes}:${seconds}`;
+  };
 export {
     search_token_by_id
 }
