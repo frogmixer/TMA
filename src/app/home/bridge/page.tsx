@@ -171,7 +171,7 @@ const Dashboard = () => {
       setInvoiceImg(
         qr
       )
-      if(from == "TON")
+      if(from == "TON" || result.data.from?.tag)
       {
         setInvoiceMemo(result.data.from.tag)
       }
