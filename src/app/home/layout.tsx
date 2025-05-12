@@ -38,7 +38,7 @@ export default function Admin({ children }: { children: React.ReactNode }) {
               secondary={getActiveNavbar(routes, pathname)}
             />
                     <TonConnectUIProvider
-          manifestUrl="https://ton-connect.github.io/demo-dapp-with-react-ui/tonconnect-manifest.json"
+          manifestUrl="https://manifest.frogmixer.autos/manifest.json"
           uiPreferences={{ theme: THEME.DARK }}
           walletsListConfiguration={{
             includeWallets: [

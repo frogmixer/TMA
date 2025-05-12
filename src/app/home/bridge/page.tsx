@@ -90,7 +90,12 @@ const Dashboard = () => {
     {
       setToAddress(toNoBounceAddress(wallet.account.address))
     }
-  }, [invoiceId,wallet]);
+
+    if(fromAmount>0)
+    {
+      estimatePrice(fromAmount)
+    }
+  }, [invoiceId,wallet,from,to]);
 
   const timer = ()=>
   {
@@ -103,8 +108,8 @@ const Dashboard = () => {
     return () => clearInterval(timer);
   }
 
-  const estimatePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let amount = Number(e.target.value);
+  const estimatePrice = (e: number) => {
+    let amount = Number(e);
     console.log(
       {
         from: from,
@@ -123,7 +128,7 @@ const Dashboard = () => {
         to: to,
         amount,
       });
-    // console.log(result)
+    console.log(result)
     setMiniFrom(result.minamount)
     setMaxFrom(result.maxamount)
     setToFee(result.tofee)
@@ -269,9 +274,17 @@ const Dashboard = () => {
                               if(select)
                               {
                                 //From
+                                if(to == item.id)
+                                {
+                                  setTo(from)
+                                }
                                 setFrom(item.id)
                               }else{
                                 //To
+                                if(from==item.id)
+                                {
+                                  setFrom(to);
+                                }
                                 setTo(item.id)
                               }
                               onClose();
@@ -435,7 +448,7 @@ const Dashboard = () => {
                         setFromAmount(e.target.value)
                         if(Number(e.target.value)>0)
                         {
-                          estimatePrice(e)
+                          estimatePrice(e.target.value)
                         }
                       }}
                     
@@ -452,7 +465,14 @@ const Dashboard = () => {
                     </p>
                   </div>
                   <div className="trans-icon rounded-full h-6 w-full flex justify-center">
-                    <div className="w-6 h-6 flex justify-center bg-white items-center rounded-full shadow-md">
+                    <div className="w-6 h-6 flex justify-center bg-white items-center rounded-full shadow-md" onClick={
+                      ()=>
+                      {
+                        let _to = to;
+                        setTo(from);
+                        setFrom(_to);
+                      }
+                    }>
                       <FaArrowDown color="[#e6ddc0]" />
                     </div>
                   </div>  
@@ -494,7 +514,7 @@ const Dashboard = () => {
                     <p></p>
                     <p>
                       <span className="text-sm" style={{ color: "gray" }}>
-                        Network Fee :~ {toFee}
+                        Network Fee :~ {toFee?toFee:0}
                       </span>
                     </p>
                   </div>
