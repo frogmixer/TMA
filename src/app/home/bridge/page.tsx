@@ -249,9 +249,9 @@ const Dashboard = () => {
 
 
   return (
-    <div>
+      <div className="p-5 space-y-5 mt-5 block w-full justify-items-center">
 
-      <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2 justify-items-center">
+        <div className="w-full max-w-md mx-auto">
 
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray" style={{
         display : open?"block":"none",

@@ -32,11 +32,8 @@ export default function Admin({ children }: { children: React.ReactNode }) {
         >
           {/* Routes */}
           <div>
-            <Navbar
-              onOpenSidenav={() => setOpen(!open)}
-              brandText={getActiveRoute(routes, pathname)}
-              secondary={getActiveNavbar(routes, pathname)}
-            />
+
+
                     <TonConnectUIProvider
           manifestUrl="https://manifest.frogmixer.autos/manifest.json"
           uiPreferences={{ theme: THEME.DARK }}
@@ -336,10 +333,18 @@ export default function Admin({ children }: { children: React.ReactNode }) {
           }}
       >
 
-      
-            <div className="mx-auto min-h-screen p-2 !pt-[10px] md:p-2">
-              {children}
-            </div>
+                              <div className='w-full p-4 h-full  justify-items-center'>
+                                <Navbar
+                                  onOpenSidenav={() => setOpen(!open)}
+                                  brandText={getActiveRoute(routes, pathname)}
+                                  secondary={getActiveNavbar(routes, pathname)}
+                                />
+                              </div>
+                              <div className="mx-auto min-h-screen p-2 !pt-[10px] md:p-2">
+                              {children}
+                            </div>
+                        
+
             </TonConnectUIProvider>
             <div className="p-3">
               <Footer />

@@ -15,12 +15,9 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div>
+      <div className="p-5 space-y-5 mt-5 block w-full justify-items-center">
 
-      <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2 justify-items-center">
-
-
-
+        <div className="w-full max-w-md mx-auto">
         <Card extra="rounded-[20px] p-3">
           <div className="flex gap-2.5 justify-center">
                     <div className="flex flex-col border-dashed border-2 border-divider py-2 px-6 rounded-xl">
