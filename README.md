@@ -180,7 +180,6 @@ src/
 - ✅ **Responsive design** across all devices
 - ✅ **Clear navigation** and user experience
 - ✅ **Integration** of all project features and community links
-- ✅ **Deployed website** accessible at https://exsw182300.space.minimax.io
 
 ## Technical Highlights
 
